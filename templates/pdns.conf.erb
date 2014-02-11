@@ -1,0 +1,68 @@
+# <%= @template_header %>
+##########################################
+local-address=<%= @addresses.join(", ") %>
+local-port=<%= @port %>
+config-dir=<%= @config_dir %>
+socket-dir=<%= @socket_dir %>
+daemon=<%= @real_daemon %>
+guardian=<%= @real_guardian %>
+setuid=<%= @uid %>
+setgid=<%= @gid %>
+module-dir=/usr/lib/powerdns
+version-string=powerdns
+wildcards=<%= @real_wildcards %>
+
+## Master/Slave operations
+master=<%= @real_master %>
+slave=<%= @real_slave %>
+
+## Threads
+distributor-threads=3
+receiver-threads=1
+
+## axfr
+disable-axfr=<%= @real_disable_axfr %>
+<% if @real_disable_axfr == 'no' and @allow_axfr_ips -%>
+allow-axfr-ips=<%= @allow_axfr_ips.join(", ") %>
+<% end -%>
+
+## logging
+loglevel=<%= @log_level %>
+log-dns-details=<%= @real_log_dns_details %>
+log-dns-queries=<%= @real_log_dns_queries %>
+log-failed-updates=<%= @real_log_failed_updates %>
+query-logging=<%= @real_query_logging %>
+<% if @logfile -%>
+use-logfile=yes
+logfile=<%= @logfile %>
+<% end -%>
+<% if @logging_facility -%>
+logging-facility=<%= @logging_facility %>
+<% end -%>
+
+## caching
+query-cache-ttl=<%= @query_cache_ttl %>
+max-cache-entries=<%= @max_cache_entries %>
+
+## SOA defaults
+soa-serial-offset=<%= @soa_serial_offset %>
+soa-refresh-default=<%= @soa_refresh_default %>
+soa-retry-default=<%= @soa_retry_default %>
+soa-expire-default=<%= @soa_expire_default %>
+soa-minimum-ttl=<%= @soa_minimum_ttl %>
+
+## webserver
+webserver=<%= @real_webserver %>
+<% if @real_webserver == "yes" -%>
+webserver-address=<%= @webserver_address %>
+webserver-port=<%= @webserver_port %>
+webserver-password=<%= @webserver_password %>
+webserver-print-arguments=<%= @real_webserver_pa %>
+<% else -%>
+# Bug http://wiki.powerdns.com/trac/ticket/455
+# choose an high port, hope that does not conflict with anything
+webserver-port=61234
+<% end -%>
+
+## Specific Configuration
+include=<%= @local_config_dir %>
