@@ -52,6 +52,6 @@ class powerdns::backends::mysql (
     mode    => '0640',
     require => Package['pdns-backend-mysql'],
     content => template('powerdns/pdns.local.gmysql.erb'),
-    #notify  => Service[$powerdns::service_name]
+    notify  => Service[$powerdns::service_name]
   }
 }
