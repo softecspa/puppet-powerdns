@@ -50,6 +50,8 @@ class powerdns::params {
   $service_name = 'pdns'
   $package_name = 'pdns-server'
 
+  $backend_type = 'mysql'
+
   $service_ensure = running
   $service_enable = true
 }

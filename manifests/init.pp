@@ -70,13 +70,19 @@
 # [*max_cache_entries*]
 #   Number of record in cache: Default: 1000000
 #
+# [*backend_type*]
+#   Specifies which backend is configured, used by supermaster define (Default: mysql)
+#
 # == Require
 #   Stdlib: https://forge.puppetlabs.com/puppetlabs/stdlib
 #   Softec: https://github.com/softecspa/puppet-softec
 #
 # == Example
 #
-#   See 
+#     class { 'powerdns':
+#       allow_axfr_ips => ['1.1.1.1', '2.2.2.2'],
+#       slave => true,
+#     }
 #
 class powerdns (
   $addresses     = $powerdns::params::addresses,
@@ -121,6 +127,8 @@ class powerdns (
   $webserver_print_arguments = $powerdns::params::webserver_print_arguments,
 
   $local_config_dir = $powerdns::params::local_config_dir,
+
+  $backend_type = $powerdns::params::backend_type,
 
   $service_ensure = $powerdns::params::service_ensure,
   $service_enable = $powerdns::params::service_enable,

@@ -1,4 +1,4 @@
-# == define powerdns::backend::mysql
+# == class powerdns::backend::mysql
 #
 # Install and configure mysql backend for PowerDNS
 #
@@ -24,10 +24,17 @@
 #
 # === Examples
 #
-define powerdns::backends::mysql (
+#   powerdns::backends::mysql{ 'backend01':
+#     host=>'localhost',
+#     dbname=>'pdns',
+#     user=>'someuser',
+#     password=>'somepass',
+#   }
+#
+class powerdns::backends::mysql (
   $host,
   $dbname,
-  $user,
+  $username,
   $password,
   $port=3306,
   $dnssec=false,
@@ -45,6 +52,6 @@ define powerdns::backends::mysql (
     mode    => '0640',
     require => Package['pdns-backend-mysql'],
     content => template('powerdns/pdns.local.gmysql.erb'),
-    notify  => Service[$powerdns::params::service_name]
+    #notify  => Service[$powerdns::service_name]
   }
 }
