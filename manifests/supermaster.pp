@@ -37,8 +37,10 @@ define powerdns::supermaster (
 {
   case $powerdns::backend_type {
     'mysql': {
-      package{'mysql-client':
-        ensure => present
+      if !defined(Package['mysql-client']) {
+        package{'mysql-client':
+          ensure => present
+        }
       }
       if ($ensure == 'present') {
         if ($ip_update) {
