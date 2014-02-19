@@ -17,6 +17,9 @@
 # [*ensure*]
 #   Control if a supermaster should be present (Default: present)
 #
+# [*ip_update*]
+#   If true update the ip of an already present supermaster (Default: false)
+#
 # == Example
 #
 #  powerdns::supermaster { 'supermaster_fdqn':
@@ -29,14 +32,23 @@ define powerdns::supermaster (
   $nameserver,
   $account = '',
   $ensure = 'present',
+  $ip_update = false,
 )
 {
   case $powerdns::backend_type {
     'mysql': {
-      if ($ensure == 'present'){
-        exec { "supermaster_mysql_add_${ip}_${nameserver}":
-          command => "mysql -h${powerdns::backends::mysql::host} -u${powerdns::backends::mysql::username} -P${powerdns::backends::mysql::port} -p${powerdns::backends::mysql::password} ${powerdns::backends::mysql::dbname} -e \"INSERT INTO supermasters VALUES ('${ip}', '${nameserver}', '${account}')\"",
-          onlyif => "test -z \"`mysql -h${powerdns::backends::mysql::host} -u${powerdns::backends::mysql::username} -P${powerdns::backends::mysql::port} -p${powerdns::backends::mysql::password} ${powerdns::backends::mysql::dbname} -e \"SELECT ip from supermasters WHERE ip='${ip}' AND nameserver='${nameserver}' AND account='${account}'\"`\""
+      if ($ensure == 'present') {
+        if ($ip_update) {
+          exec { "supermaster_mysql_update_${ip}_${nameserver}":
+            command => "mysql -h${powerdns::backends::mysql::host} -u${powerdns::backends::mysql::username} -P${powerdns::backends::mysql::port} -p${powerdns::backends::mysql::password} ${powerdns::backends::mysql::dbname} -e \"UPDATE supermasters  SET ip='${ip}' WHERE nameserver='${nameserver}' AND account='${account}'\" && mysql -h${powerdns::backends::mysql::host} -u${powerdns::backends::mysql::username} -P${powerdns::backends::mysql::port} -p${powerdns::backends::mysql::password} ${powerdns::backends::mysql::dbname} -e \"UPDATE domains SET master='${ip}' WHERE type='SLAVE' AND account='${account}'\"",
+            onlyif => "test -z \"`mysql -h${powerdns::backends::mysql::host} -u${powerdns::backends::mysql::username} -P${powerdns::backends::mysql::port} -p${powerdns::backends::mysql::password} ${powerdns::backends::mysql::dbname} -e \"SELECT ip from supermasters WHERE ip != '${ip}' AND nameserver='${nameserver}' AND account='${account}'\"`\""
+          }
+        }
+        else {
+          exec { "supermaster_mysql_add_${ip}_${nameserver}":
+            command => "mysql -h${powerdns::backends::mysql::host} -u${powerdns::backends::mysql::username} -P${powerdns::backends::mysql::port} -p${powerdns::backends::mysql::password} ${powerdns::backends::mysql::dbname} -e \"INSERT INTO supermasters VALUES ('${ip}', '${nameserver}', '${account}')\"",
+            onlyif => "test -z \"`mysql -h${powerdns::backends::mysql::host} -u${powerdns::backends::mysql::username} -P${powerdns::backends::mysql::port} -p${powerdns::backends::mysql::password} ${powerdns::backends::mysql::dbname} -e \"SELECT ip from supermasters WHERE ip='${ip}' AND nameserver='${nameserver}' AND account='${account}'\"`\""
+          }
         }
       }
       else {

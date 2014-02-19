@@ -135,7 +135,7 @@ class powerdns (
 
 ) inherits powerdns::params {
 
-  service_name = $powerdns::params::service_name
+  $service_name = $powerdns::params::service_name
 
   $real_daemon       = bool2polarity($daemon)
   $real_guardian     = bool2polarity($guardian)
