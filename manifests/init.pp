@@ -64,8 +64,11 @@
 # [*query_logging*]
 #   Instruct backend to log textual representation of query. Default: false
 #
+# [*cache_ttl*]
+#   Seconds to store packets in the Packet Cache: Default: 120
+#
 # [*query_cache_ttl*]
-#   TTL of record in cache: Default: 60
+#   Seconds to store queries with an answer in the Query Cache: Default: 60
 #
 # [*max_cache_entries*]
 #   Number of record in cache: Default: 1000000
@@ -110,6 +113,7 @@ class powerdns (
   $log_failed_updates = $powerdns::params::log_failed_updates,
   $query_logging      = $powerdns::params::query_logging,
 
+  $cache_ttl          = $powerdns::params::cache_ttl,
   $query_cache_ttl    = $powerdns::params::query_cache_ttl,
   $max_cache_entries  = $powerdns::params::max_cache_entries,
 

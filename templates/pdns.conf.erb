@@ -1,4 +1,4 @@
-# <%= @template_header %>
+# <%= scope.lookup_var('::template_header') %>
 ##########################################
 local-address=<%= @addresses.join(", ") %>
 local-port=<%= @port %>
@@ -41,6 +41,7 @@ logging-facility=<%= @logging_facility %>
 <% end -%>
 
 ## caching
+cache-ttl=<%= @cache_ttl %>
 query-cache-ttl=<%= @query_cache_ttl %>
 max-cache-entries=<%= @max_cache_entries %>
 

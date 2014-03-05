@@ -30,6 +30,7 @@ class powerdns::params {
   $logfile          = false
   $logging_facility = false
 
+  $cache_ttl    = 120
   $query_cache_ttl    = 60
   $max_cache_entries  = 1000000
 
