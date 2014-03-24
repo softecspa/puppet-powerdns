@@ -38,9 +38,9 @@ class powerdns::params {
   $soa_expire_default   = 604800
   $soa_minimum_ttl      = 3600
 
-  $webserver                 = false
-  $webserver_address         = '127.0.0.1'
-  $webserver_port            = 5353
+  $webserver                  = false
+  $webserver_address          = '127.0.0.1'
+  $webserver_port             = 5353
   $webserver_password         = 'pdnswebserver'
   $webserver_print_arguments  = false
 
@@ -49,7 +49,13 @@ class powerdns::params {
   $service_name = 'pdns'
   $package_name = 'pdns-server'
 
+  $service_recursor_name = 'pdns-recursor'
+  $package_recurosr_name = 'pdns-recursor'
+
   $backend_type = 'mysql'
+
+  $bind_conf_file      = false
+  $bind_check_interval = 300
 
   $service_ensure = running
   $service_enable = true

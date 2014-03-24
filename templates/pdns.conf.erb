@@ -61,5 +61,12 @@ webserver-print-arguments=<%= @real_webserver_pa %>
 webserver-port=61234
 <% end -%>
 
+<% if @bind_conf_file -%>
+## BIND Conf
+launch=bind
+bind-config=<%= @bind_conf_file %>
+bind-check-interval=<%= @bind_check_interval %>
+<% end -%>
+
 ## Specific Configuration
 include=<%= @local_config_dir %>

@@ -41,19 +41,18 @@ class powerdns::backends::mysql (
   $password=false,
   $port=3306,
   $dnssec=false,
-  $enable_bind=false,
 )
 {
   $real_dnssec = bool2polarity($dnssec)
 
-  if $enable_bind {
-    backends = 'gmysql,bind'
+  if $powerdns::bind_conf_file {
+    $backends = 'gmysql,bind'
   }
   else {
-    backends = 'gmysql'
+    $backends = 'gmysql'
   }
 
-  package {'pdns-backend-mysql' :
+  package { 'pdns-backend-mysql' :
     ensure  => present,
   }
 

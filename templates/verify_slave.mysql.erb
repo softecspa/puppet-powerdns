@@ -1,0 +1,91 @@
+<?php
+    // <%= @template_header %>
+    /*
+        Based on a script created by Mark Scholten (www.mscholten.eu) for SinnerG BV (www.sinnerg.nl)
+    */
+
+    // Functions
+    function check_zone($domain, $server) {
+        $axfr = shell_exec("dig AXFR ".$domain." @".$server."");
+        if (strstr($axfr, '; Transfer failed.'))
+            return 1;
+        if (strstr($axfr, 'failed: connection refused.'))
+            return 2;
+
+        return 0;
+    }
+
+    function update_zone($domain) {
+        shell_exec("pdns_control retrieve $domain");
+    }
+
+    // Configurations
+    $host = '<%= @template_header %>';
+    $user = 'root';
+    $pass = 'mysql';
+    $dbname = 'pdns';
+    $ts_selector = 1;
+    $notify_to = 'a.cappelli@gmail.com';
+    $threshold = array(
+        'notify' => 5,
+        'delete' => 10
+    );
+
+    // Main
+    mysql_connect($host, $user, $pass);
+    mysql_select_db($dbname);
+
+    // check domains not retrieved for more than 5 hours
+    $ts = time() - $ts_selector * 3600;
+
+    $sql = "SELECT `id`, `name`,`master` FROM domains WHERE `type`='SLAVE' AND (`last_check` < ".$ts." OR last_check IS NULL)";
+    $query = mysql_query($sql) or die(mysql_error());
+
+    while($record = mysql_fetch_object($query)) {
+        $res = check_zone($record->name, $record->master);
+        switch($res) {
+            case 0:
+                update_zone($record->name);
+                break;
+            case 1:
+                $sql = "INSERT INTO slave_control (domain_id, check_date, status) VALUES (".$record->id.",NOW(), ".$res.")";
+                mysql_query($sql);
+                break;
+        }
+    }
+
+    $sql = "SELECT count(*) as c, D.name as name, D.id as id FROM domains AS D, slave_control AS S WHERE D.id=S.domain_id HAVING count(*) > ".$threshold['notify'];
+    $query = mysql_query($sql) or die(mysql_error());
+
+    $body_notify='';
+    $body_delete='';
+    $delete_ids=array();
+
+    $to_notify=False;
+    $to_delete=False;
+
+    while($record = mysql_fetch_object($query)) {
+        $obj = array('id'=>$record->id, 'name'=>$record->name, 'count'=> $record->c);
+        if ($record->c > $threshold['delete']) {
+            $to_delete = True;
+            $delete_ids[] = $record->id;
+            $body_delete.=$record->name."\n";
+        } else {
+            $to_notify=True;
+            $body_notify.=$record->name." (".$record->c." times)\n";
+        }
+    }
+
+    if ($to_notify){
+        mail($notify_to, "Domains that failed to trasfer", $body_notify);
+    }
+
+    if ($to_delete){
+        $delete_id = implode($delete_ids,',');
+        $sql = "DELETE FROM domains WHERE id in ($delete_id)";
+        $query = mysql_query($sql) or die(mysql_error());
+        mail($notify_to, "Domains removed from master", $body_delete);
+    }
+
+?>
+

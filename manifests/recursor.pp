@@ -1,6 +1,6 @@
-# = class powerdns
+# = class powerdns::recursor
 #
-# This class install and configures PowerDNS Auth Server
+# This class install and configures PowerDNS Recursor
 #
 # == Params
 #
@@ -161,8 +161,6 @@ class powerdns (
     include rsyslog
   }
 
-  $service_name = $powerdns::params::service_name
-
   $real_daemon       = bool2polarity($daemon)
   $real_guardian     = bool2polarity($guardian)
   $real_wildcards    = bool2polarity($wildcards)
@@ -203,41 +201,41 @@ class powerdns (
     ensure  => present,
   }
 
-  service {$powerdns::params::service_name :
+  service {$powerdns::params::service_recursor_name :
     ensure      => $service_ensure,
     enable      => $service_enable,
     hasrestart  => true,
     hasstatus   => true,
   }
 
-  exec {"${powerdns::params::service_name} reload":
-    command     => "/etc/init.d/${powerdns::params::service_name} reload",
+  exec {"${powerdns::params::service_recursor_name} reload":
+    command     => "/etc/init.d/${powerdns::params::service_recursor_name} reload",
     refreshonly => true,
   }
 
-  file { '/etc/powerdns/pdns.conf' :
+  file { '/etc/powerdns/recursor.conf' :
     owner   => 'root',
     group   => 'root',
     mode    => '0600',
-    require => Package[$powerdns::params::package_name],
-    content => template('powerdns/pdns.conf.erb'),
-    notify  => Service[$powerdns::params::service_name]
+    require => Package[$powerdns::params::package_recursor_name],
+    content => template('powerdns/recursor.conf.erb'),
+    notify  => Service[$powerdns::params::service_recursor_name]
   }
 
-  file { '/etc/rsyslog.d/pdns_auth.conf' :
+  file { '/etc/rsyslog.d/pdns_recursor.conf' :
     owner   => 'root',
     group   => 'root',
     mode    => '0600',
     require => Package['rsyslog'],
-    source  => 'puppet:///modules/powerdns/rsyslog_auth.conf',
+    source  => 'puppet:///modules/powerdns/rsyslog_recursor.conf',
     notify  => Service['rsyslog']
   }
 
-  file { '/etc/logrotate.d/pdns_auth' :
+  file { '/etc/logrotate.d/pdns_recursor' :
     owner   => 'root',
     group   => 'root',
     mode    => '0600',
-    source  => 'puppet:///modules/powerdns/logrotate_auth.conf',
+    source  => 'puppet:///modules/powerdns/logrotate_recursor.conf',
   }
 
 }
