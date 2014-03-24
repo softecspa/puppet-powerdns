@@ -26,11 +26,9 @@ class powerdns::params {
   $log_dns_queries    = false
   $log_failed_updates = false
   $query_logging      = false
+  $logging_facility   = false
 
-  $logfile          = false
-  $logging_facility = false
-
-  $cache_ttl    = 120
+  $cache_ttl          = 120
   $query_cache_ttl    = 60
   $max_cache_entries  = 1000000
 

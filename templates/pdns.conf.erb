@@ -1,4 +1,4 @@
-# <%= scope.lookup_var('::template_header') %>
+# <%= scope.lookupvar('::template_header') %>
 ##########################################
 local-address=<%= @addresses.join(", ") %>
 local-port=<%= @port %>
@@ -32,10 +32,6 @@ log-dns-details=<%= @real_log_dns_details %>
 log-dns-queries=<%= @real_log_dns_queries %>
 log-failed-updates=<%= @real_log_failed_updates %>
 query-logging=<%= @real_query_logging %>
-<% if @logfile -%>
-use-logfile=yes
-logfile=<%= @logfile %>
-<% end -%>
 <% if @logging_facility -%>
 logging-facility=<%= @logging_facility %>
 <% end -%>

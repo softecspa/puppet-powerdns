@@ -22,6 +22,9 @@
 # [*dnssec*]
 #   Enable DNSSEC (Default: false)
 #
+# [*enable*]
+#   Enable Bind built-in support (Default: false)
+#
 # === Examples
 #
 #   powerdns::backends::mysql{ 'backend01':
@@ -33,14 +36,22 @@
 #
 class powerdns::backends::mysql (
   $host,
-  $dbname,
-  $username,
-  $password,
+  $dbname='pdns',
+  $username='pdns',
+  $password=false,
   $port=3306,
   $dnssec=false,
+  $enable_bind=false,
 )
 {
   $real_dnssec = bool2polarity($dnssec)
+
+  if $enable_bind {
+    backends = 'gmysql,bind'
+  }
+  else {
+    backends = 'gmysql'
+  }
 
   package {'pdns-backend-mysql' :
     ensure  => present,

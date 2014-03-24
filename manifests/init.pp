@@ -59,10 +59,14 @@
 #   Log queries. Default: false
 #
 # [*log_failed_updates*]
-#   LOg error during updates. Default: false
+#   Log error during updates. Default: false
 #
 # [*query_logging*]
 #   Instruct backend to log textual representation of query. Default: false
+#
+# [*logging_facility*]
+#   If specified choose which facility use for syslog from the local ones.
+#   The vale should be in range 0-7. Default: false
 #
 # [*cache_ttl*]
 #   Seconds to store packets in the Packet Cache: Default: 120
@@ -112,6 +116,7 @@ class powerdns (
   $log_dns_queries    = $powerdns::params::log_dns_queries,
   $log_failed_updates = $powerdns::params::log_failed_updates,
   $query_logging      = $powerdns::params::query_logging,
+  $logging_facility   = $powerdns::params::logging_facility,
 
   $cache_ttl          = $powerdns::params::cache_ttl,
   $query_cache_ttl    = $powerdns::params::query_cache_ttl,
@@ -138,6 +143,14 @@ class powerdns (
   $service_enable = $powerdns::params::service_enable,
 
 ) inherits powerdns::params {
+
+  if $::operatingsystem != 'Ubuntu' {
+    fail("This module supports only Ubuntu")
+  }
+
+  if ! defined(Service['rsyslog']) {
+    include rsyslog
+  }
 
   $service_name = $powerdns::params::service_name
 
@@ -200,6 +213,22 @@ class powerdns (
     require => Package[$powerdns::params::package_name],
     content => template('powerdns/pdns.conf.erb'),
     notify  => Service[$powerdns::params::service_name]
+  }
+
+  file { '/etc/rsyslog/pdns.conf' :
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0600',
+    require => Package['rsyslog'],
+    source  => 'puppet:///modules/powerdns/rsyslog.conf',
+    notify  => Service['rsyslog']
+  }
+
+  file { '/etc/logrotate.d/pdns' :
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0600',
+    source  => 'puppet:///modules/powerdns/logrotate.conf',
   }
 
 }
