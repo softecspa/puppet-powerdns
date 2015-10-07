@@ -56,7 +56,7 @@ class powerdns::backends::mysql (
     ensure  => present,
   }
 
-  file { '/etc/powerdns/pdns.d/pdns.local.gmysql' :
+  file { '/etc/powerdns/pdns.d/pdns.local.gmysql.conf' :
     owner   => $powerdns::params::uid,
     group   => 'root',
     mode    => '0640',
