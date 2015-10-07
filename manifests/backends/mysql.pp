@@ -56,11 +56,18 @@ class powerdns::backends::mysql (
     ensure  => present,
   }
 
+  file { '/etc/powerdns/pdns.d/pdns.simplebind.conf':
+    ensure => absent,
+  }
+
   file { '/etc/powerdns/pdns.d/pdns.local.gmysql.conf' :
     owner   => $powerdns::params::uid,
     group   => 'root',
     mode    => '0640',
-    require => Package['pdns-backend-mysql'],
+    require => [ 
+      Package['pdns-backend-mysql'], 
+      File['/etc/powerdns/pdns.d/pdns.simplebind.conf'],
+    ],
     content => template('powerdns/pdns.local.gmysql.erb'),
     notify  => Service[$powerdns::service_name]
   }
