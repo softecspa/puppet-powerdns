@@ -1,5 +1,7 @@
+##########################################
 # <%= scope.lookupvar('::template_header') %>
 ##########################################
+launch=bind
 local-address=<%= @addresses.join(", ") %>
 local-port=<%= @port %>
 config-dir=<%= @config_dir %>
@@ -10,7 +12,7 @@ setuid=<%= @uid %>
 setgid=<%= @gid %>
 module-dir=/usr/lib/powerdns
 version-string=powerdns
-wildcards=<%= @real_wildcards %>
+#wildcards=<%= @real_wildcards %>
 
 ## Master/Slave operations
 master=<%= @real_master %>
@@ -69,4 +71,4 @@ bind-check-interval=<%= @bind_check_interval %>
 <% end -%>
 
 ## Specific Configuration
-include=<%= @local_config_dir %>
+include-dir=<%= @local_config_dir %>
