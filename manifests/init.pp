@@ -78,13 +78,15 @@
 #   Number of record in cache: Default: 1000000
 #
 # [*backend_type*]
-#   Specifies which backend is configured, used by supermaster define (Default: mysql)
+#   Specifies which backend is configured, used by supermaster define 
+#   (Default: mysql)
 #
 # [*bind_conf_file*]
 #   Enable the builtin bindbackend pointing to the conf file (Default: false)
 #
 # [*bind_check_interval*]
-#   If bindbackend is enabled intervalin seconds to reload zone file (Default: 300)
+#   If bindbackend is enabled intervalin seconds to reload zone file 
+#   (Default: 300)
 #
 # == Require
 #   Stdlib: https://forge.puppetlabs.com/puppetlabs/stdlib
@@ -138,7 +140,7 @@ class powerdns (
   $webserver_address  = $powerdns::params::webserver_address,
   $webserver_port     = $powerdns::params::webserver_port,
   $webserver_password = $powerdns::params::webserver_password,
-  
+
   $webserver_print_arguments = $powerdns::params::webserver_print_arguments,
 
   $local_config_dir = $powerdns::params::local_config_dir,
@@ -154,7 +156,11 @@ class powerdns (
 ) inherits powerdns::params {
 
   if $::operatingsystem != 'Ubuntu' {
-    fail("This module supports only Ubuntu")
+    fail('This module supports only Ubuntu')
+  }
+
+  if $::lsbdistrelease != '14.04' {
+    fail('This module supports only Ubuntu 14.04')
   }
 
   if ! defined(Service['rsyslog']) {
@@ -168,13 +174,13 @@ class powerdns (
   $real_wildcards    = bool2polarity($wildcards)
   $real_master       = bool2polarity($master)
   $real_slave        = bool2polarity($slave)
- 
+
   if ! is_integer($distributor_threads) {
-    fail("distributor-threads should be integer")
+    fail('distributor-threads should be integer')
   }
-  
+
   if ! is_integer($receiver_threads) {
-    fail("receiver-threads should be integer")
+    fail('receiver-threads should be integer')
   }
 
   $real_disable_axfr = bool2polarity($disable_axfr)
@@ -189,25 +195,25 @@ class powerdns (
   $real_query_logging       = bool2polarity($query_logging)
 
   if ! is_integer($query_cache_ttl) {
-    fail("query-cache-ttl should be integer")
+    fail('query-cache-ttl should be integer')
   }
 
   if ! is_integer($max_cache_entries) {
-    fail("max-cache-entries should be integer")
+    fail('max-cache-entries should be integer')
   }
 
   $real_webserver     = bool2polarity($webserver)
   $real_webserver_pa  = bool2polarity($webserver_print_arguments)
 
   package {$powerdns::params::package_name :
-    ensure  => present,
+    ensure => present,
   }
 
   service {$powerdns::params::service_name :
-    ensure      => $service_ensure,
-    enable      => $service_enable,
-    hasrestart  => true,
-    hasstatus   => true,
+    ensure     => $service_ensure,
+    enable     => $service_enable,
+    hasrestart => true,
+    hasstatus  => true,
   }
 
   exec {"${powerdns::params::service_name} reload":
@@ -234,10 +240,10 @@ class powerdns (
   }
 
   file { '/etc/logrotate.d/pdns_auth' :
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0600',
-    source  => 'puppet:///modules/powerdns/logrotate_auth.conf',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0600',
+    source => 'puppet:///modules/powerdns/logrotate_auth.conf',
   }
 
 }
