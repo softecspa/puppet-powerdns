@@ -100,16 +100,16 @@
 #     }
 #
 class powerdns (
-  $addresses     = $powerdns::params::addresses,
-  $addresses     = $powerdns::params::allow_recursion,
-  $port          = $powerdns::params::port,
-  $config_dir    = $powerdns::params::config_dir,
-  $socket_dir    = $powerdns::params::socket_dir,
-  $daemon        = $powerdns::params::daemon,
-  $guardian      = $powerdns::params::guardian,
-  $uid           = $powerdns::params::uid,
-  $gid           = $powerdns::params::gid,
-  $wildcards     = $powerdns::params::wildcards,
+  $addresses        = $powerdns::params::addresses,
+  $allow_recursion  = $powerdns::params::allow_recursion,
+  $port             = $powerdns::params::port,
+  $config_dir       = $powerdns::params::config_dir,
+  $socket_dir       = $powerdns::params::socket_dir,
+  $daemon           = $powerdns::params::daemon,
+  $guardian         = $powerdns::params::guardian,
+  $uid              = $powerdns::params::uid,
+  $gid              = $powerdns::params::gid,
+  $wildcards        = $powerdns::params::wildcards,
 
   $master = $powerdns::params::master,
   $slave  = $powerdns::params::slave,
