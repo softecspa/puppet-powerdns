@@ -154,9 +154,9 @@ class powerdns (
   $service_ensure = $powerdns::params::service_ensure,
   $service_enable = $powerdns::params::service_enable,
 
-  $recursor            = $powerdns::params::recursor
-  $recursor_allow_from = $powerdns::params::recursor_allow_from
-  $recursor_dont_query = $powerdns::params::recursor_dont_query
+  $recursor            = $powerdns::params::recursor,
+  $recursor_allow_from = $powerdns::params::recursor_allow_from,
+  $recursor_dont_query = $powerdns::params::recursor_dont_query,
 
 ) inherits powerdns::params {
 
