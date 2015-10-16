@@ -101,6 +101,7 @@
 #
 class powerdns (
   $addresses     = $powerdns::params::addresses,
+  $addresses     = $powerdns::params::allow_recursion,
   $port          = $powerdns::params::port,
   $config_dir    = $powerdns::params::config_dir,
   $socket_dir    = $powerdns::params::socket_dir,

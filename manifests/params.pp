@@ -4,6 +4,7 @@
 #
 class powerdns::params {
   $addresses        = ['127.0.0.1']
+  $allow_recursion  = ['127.0.0.1']
   $port             = '53'
   $config_dir       = '/etc/powerdns'
   $socket_dir       = '/var/run'

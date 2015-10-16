@@ -1,6 +1,8 @@
 ##########################################
 # <%= scope.lookupvar('::template_header') %>
 ##########################################
+allow-recursion=<%= @allow_recursion.join(", ") %>
+recursor=127.0.0.1
 local-address=<%= @addresses.join(", ") %>
 local-port=<%= @port %>
 config-dir=<%= @config_dir %>
@@ -11,7 +13,6 @@ setuid=<%= @uid %>
 setgid=<%= @gid %>
 module-dir=/usr/lib/powerdns
 version-string=powerdns
-#wildcards=<%= @real_wildcards %>
 
 ## Master/Slave operations
 master=<%= @real_master %>
