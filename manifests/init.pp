@@ -211,8 +211,8 @@ class powerdns (
   $real_webserver_pa  = bool2polarity($webserver_print_arguments)
 
   validate_bool($recursor)  
-  #validate_array($recursor_allow_from)
-  #validate_bool($recursor_dont_query)
+  validate_array($recursor_allow_from)
+  validate_bool($recursor_dont_query)
 
   package { $powerdns::params::package_name :
     ensure => present,
