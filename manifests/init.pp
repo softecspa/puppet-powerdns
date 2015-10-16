@@ -78,14 +78,14 @@
 #   Number of record in cache: Default: 1000000
 #
 # [*backend_type*]
-#   Specifies which backend is configured, used by supermaster define 
+#   Specifies which backend is configured, used by supermaster define
 #   (Default: mysql)
 #
 # [*bind_conf_file*]
 #   Enable the builtin bindbackend pointing to the conf file (Default: false)
 #
 # [*bind_check_interval*]
-#   If bindbackend is enabled intervalin seconds to reload zone file 
+#   If bindbackend is enabled intervalin seconds to reload zone file
 #   (Default: 300)
 #
 # == Require
@@ -153,6 +153,10 @@ class powerdns (
   $service_ensure = $powerdns::params::service_ensure,
   $service_enable = $powerdns::params::service_enable,
 
+  $recursor            = $powerdns::params::recursor
+  $recursor_allow_from = $powerdns::params::recursor_allow_from
+  $recursor_dont_query = $powerdns::params::recursor_dont_query
+
 ) inherits powerdns::params {
 
   if $::operatingsystem != 'Ubuntu' {
@@ -205,18 +209,22 @@ class powerdns (
   $real_webserver     = bool2polarity($webserver)
   $real_webserver_pa  = bool2polarity($webserver_print_arguments)
 
-  package {$powerdns::params::package_name :
+  validate_bool($recursor)  
+  validate_array($recursor_allow_from)
+  validate_bool($recursor_dont_query)
+
+  package { $powerdns::params::package_name :
     ensure => present,
   }
 
-  service {$powerdns::params::service_name :
+  service { $powerdns::params::service_name :
     ensure     => $service_ensure,
     enable     => $service_enable,
     hasrestart => true,
     hasstatus  => true,
   }
 
-  exec {"${powerdns::params::service_name} reload":
+  exec { "${powerdns::params::service_name} reload":
     command     => "/etc/init.d/${powerdns::params::service_name} reload",
     refreshonly => true,
   }
@@ -244,6 +252,33 @@ class powerdns (
     group  => 'root',
     mode   => '0600',
     source => 'puppet:///modules/powerdns/logrotate_auth.conf',
+  }
+
+  if ($recursor) { 
+    package { $powerdns::params::recursor_package_name :
+      ensure => present,
+    }
+  
+    service { $powerdns::params::recursor_service_name :
+      ensure     => $service_ensure,
+      enable     => $service_enable,
+      hasrestart => true,
+      hasstatus  => false,
+    }
+
+    exec { "${powerdns::params::recursor_service_name} reload":
+      command     => "service ${powerdns::params::recursor_service_name} reload",
+      refreshonly => true,
+    }
+
+    file { '/etc/powerdns/recursor.conf' :
+      owner   => 'root',
+      group   => 'root',
+      mode    => '0644',
+      require => Package[$powerdns::params::recursor_package_name],
+      content => template('powerdns/recursor.conf.erb'),
+      notify  => Service[$powerdns::params::recursor_service_name]
+    }
   }
 
 }

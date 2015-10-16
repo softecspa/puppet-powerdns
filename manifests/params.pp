@@ -14,7 +14,7 @@ class powerdns::params {
   $wildcards        = true
   $master           = false
   $slave            = false
-  
+
   $distributor_threads  = 3
   $receiver_threads     = 1
 
@@ -59,4 +59,11 @@ class powerdns::params {
 
   $service_ensure = running
   $service_enable = true
+
+  $recursor = true
+  $recursor_allow_from = undef
+  $recursor_dont_query = undef
+  $recursor_package_name = 'pdns-recursor'
+  $recursor_service_name = 'pdns-recursor' 
+
 }
