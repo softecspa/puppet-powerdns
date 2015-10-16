@@ -212,7 +212,7 @@ class powerdns (
 
   validate_bool($recursor)  
   validate_array($recursor_allow_from)
-  validate_bool($recursor_dont_query)
+  validate_string($recursor_dont_query)
 
   package { $powerdns::params::package_name :
     ensure => present,
