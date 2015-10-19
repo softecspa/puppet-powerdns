@@ -1,4 +1,4 @@
-<%= unless @recursor_allow_from.empty? -%>
+<%= if @recursor_allow_from != [] -%>
 allow-from=<%= @recursor_allow_from.join(', ') %>
 <% end -%>
 <% if @recursor_dont_query == '' -%>
