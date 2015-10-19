@@ -66,5 +66,7 @@ class powerdns::params {
   $recursor_dont_query = ''
   $recursor_package_name = 'pdns-recursor'
   $recursor_service_name = 'pdns-recursor' 
+  $recursor_setgid = 'pdns'
+  $recursor_setuid = 'pdns'
 
 }

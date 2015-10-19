@@ -1,7 +1,11 @@
-allow-from=<%= @recursor_allow_from.join(", ") %>
+<%= if @recursor_allow_from.count > 0 -%>
+allow-from=<%= @recursor_allow_from.join(', ') %>
+<% end -%>
+<% if @recursor_dont_query == '' -%>
 dont-query=
+<% end -%>
 local-address=127.0.0.1
 local-port=53
 quiet=yes
-setgid=pdns
-setuid=pdns
+setgid=<%= @recursor_setgid %>
+setuid=<%= @recursor_setuid %>

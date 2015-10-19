@@ -157,6 +157,8 @@ class powerdns (
   $recursor            = $powerdns::params::recursor,
   $recursor_allow_from = $powerdns::params::recursor_allow_from,
   $recursor_dont_query = $powerdns::params::recursor_dont_query,
+  $recursor_setgid     = $powerdns::params::recursor_setgid,
+  $recursor_setuid     = $powerdns::params::recursor_setuid,
 
 ) inherits powerdns::params {
 
@@ -210,9 +212,11 @@ class powerdns (
   $real_webserver     = bool2polarity($webserver)
   $real_webserver_pa  = bool2polarity($webserver_print_arguments)
 
-  validate_bool($recursor)  
+  validate_bool($recursor)
   validate_array($recursor_allow_from)
   validate_string($recursor_dont_query)
+  validate_string($recursor_setgid)
+  validate_string($recursor_setuid)
 
   package { $powerdns::params::package_name :
     ensure => present,
@@ -255,11 +259,11 @@ class powerdns (
     source => 'puppet:///modules/powerdns/logrotate_auth.conf',
   }
 
-  if ($recursor) { 
+  if ($recursor) {
     package { $powerdns::params::recursor_package_name :
       ensure => present,
     }
-  
+
     service { $powerdns::params::recursor_service_name :
       ensure     => $service_ensure,
       enable     => $service_enable,
@@ -267,8 +271,8 @@ class powerdns (
       hasstatus  => false,
     }
 
-    exec { "${powerdns::params::recursor_service_name} reload":
-      command     => "service ${powerdns::params::recursor_service_name} reload",
+    exec { "${powerdns::params::recursor_service_name} restart":
+      command     => "service ${powerdns::params::recursor_service_name} restart",
       refreshonly => true,
     }
 
