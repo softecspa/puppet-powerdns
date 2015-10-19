@@ -1,3 +1,6 @@
+##########################################
+# <%= scope.lookupvar('::template_header') %>
+##########################################
 <% unless @recursor_allow_from.empty? -%>
 allow-from=<%= @recursor_allow_from.join(', ') %>
 <% end -%>
