@@ -154,11 +154,12 @@ class powerdns (
   $service_ensure = $powerdns::params::service_ensure,
   $service_enable = $powerdns::params::service_enable,
 
-  $recursor            = $powerdns::params::recursor,
-  $recursor_allow_from = $powerdns::params::recursor_allow_from,
-  $recursor_dont_query = $powerdns::params::recursor_dont_query,
-  $recursor_setgid     = $powerdns::params::recursor_setgid,
-  $recursor_setuid     = $powerdns::params::recursor_setuid,
+  $recursor               = $powerdns::params::recursor,
+  $recursor_allow_from    = $powerdns::params::recursor_allow_from,
+  $recursor_local_address = $powerdns::params::recursor_local_address,
+  $recursor_dont_query    = $powerdns::params::recursor_dont_query,
+  $recursor_setgid        = $powerdns::params::recursor_setgid,
+  $recursor_setuid        = $powerdns::params::recursor_setuid,
 
 ) inherits powerdns::params {
 
@@ -214,6 +215,7 @@ class powerdns (
 
   validate_bool($recursor)
   validate_array($recursor_allow_from)
+  validate_array($recursor_local_address)
   validate_string($recursor_dont_query)
   validate_string($recursor_setgid)
   validate_string($recursor_setuid)

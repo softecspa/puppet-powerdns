@@ -7,7 +7,7 @@ allow-from=<%= @recursor_allow_from.join(', ') %>
 <% if @recursor_dont_query == '' -%>
 dont-query=
 <% end -%>
-local-address=127.0.0.1
+local-address=<%= @recursor_local_address.join(', ') %>
 local-port=53
 quiet=yes
 setgid=<%= @recursor_setgid %>

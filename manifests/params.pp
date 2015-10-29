@@ -63,6 +63,7 @@ class powerdns::params {
 
   $recursor = true
   $recursor_allow_from = []
+  $recursor_local_address = ['127.0.0.1']
   $recursor_dont_query = ''
   $recursor_package_name = 'pdns-recursor'
   $recursor_service_name = 'pdns-recursor' 
