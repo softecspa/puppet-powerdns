@@ -13,3 +13,6 @@ quiet=yes
 setgid=<%= @recursor_setgid %>
 setuid=<%= @recursor_setuid %>
 version-string=dns
+<% unless @recursor_forward_zones.empty? -%>
+forward-zones=<%= @recursor_forward_zones.join(', ') %>
+<% end -%>

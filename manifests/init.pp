@@ -160,6 +160,7 @@ class powerdns (
   $recursor_dont_query    = $powerdns::params::recursor_dont_query,
   $recursor_setgid        = $powerdns::params::recursor_setgid,
   $recursor_setuid        = $powerdns::params::recursor_setuid,
+  $recursor_forward_zones = [],
 
 ) inherits powerdns::params {
 
@@ -219,6 +220,7 @@ class powerdns (
   validate_string($recursor_dont_query)
   validate_string($recursor_setgid)
   validate_string($recursor_setuid)
+  validate_array($recursor_forward_zones)
 
   package { $powerdns::params::package_name :
     ensure => present,
